@@ -27,6 +27,11 @@ dependencies {
     compileOnly(libs.jspecify)
 }
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
 registerPublication(
     name = "opus-jda",
     description = "Opus encoding & decoding support for JDA",
