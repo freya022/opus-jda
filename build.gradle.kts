@@ -5,7 +5,15 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
+    exclusiveContent {
+        forRepository {
+            maven("https://jitpack.io")
+        }
+
+        filter {
+            includeModule("io.github.freya022", "JDA")
+        }
+    }
 }
 
 dependencies {
@@ -13,7 +21,7 @@ dependencies {
     api(libs.slf4j)
 
     // JDA
-    compileOnly("net.dv8tion:JDA:6.2.1_DEV")
+    compileOnly("io.github.freya022:JDA:c6ba02a105")
 
     // Nullability annotations
     compileOnly(libs.jspecify)
