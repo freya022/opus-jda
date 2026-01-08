@@ -1,0 +1,80 @@
+package dev.freya02.opus.jda;
+
+import net.dv8tion.jda.internal.utils.Checks;
+import org.jspecify.annotations.NullMarked;
+
+import java.io.IOException;
+import java.nio.file.Path;
+
+/**
+ * Utility class to load Opus natives.
+ *
+ * <p>An alternative to load natives is to set the {@code opus.lib} {@linkplain System#setProperty(String, String) system property}
+ * to the <b>absolute</b> path of the native library.
+ */
+@NullMarked
+public class OpusNativesLoader {
+    private static boolean init = false;
+
+    /**
+     * Whether natives were already loaded. This only considers natives loaded by this class.
+     *
+     * @return {@code true} if natives are loaded
+     */
+    public static synchronized boolean isLoaded() {
+        return init;
+    }
+
+    /**
+     * Loads the natives from the provided path's file.
+     *
+     * @param  path
+     *         The path to the native library
+     *
+     * @throws IllegalArgumentException
+     *         If {@code path} is {@code null}
+     *
+     * @return {@code true} if the natives were loaded, {@code false} if they already were
+     */
+    public static synchronized boolean load(Path path) {
+        if (init)
+            return false;
+        Checks.notNull(path, "Path");
+        if (!path.isAbsolute())
+            throw new IllegalArgumentException("path is not absolute: " + path);
+
+        final String pathStr = path.toAbsolutePath().toString();
+        System.setProperty("opus.lib", pathStr);
+        System.load(pathStr);
+        init = true;
+        return true;
+    }
+
+    /**
+     * Loads the natives using the provided path from the provided class.
+     *
+     * <p>Remember the resource path is relative to the provided class, unless prefixed with {@code /}.
+     *
+     * @param  resourcePath
+     *         The path to the native library in the provided class
+     * @param  clazz
+     *         The class from which to relatively load the resource from
+     *
+     * @throws IllegalArgumentException
+     *         If {@code resourcePath} or {@code clazz} is {@code null}
+     * @throws IOException
+     *         If the resource does not exist or when extracting it fails
+     *
+     * @return {@code true} if the natives were loaded, {@code false} if they already were
+     */
+    public static synchronized boolean loadFromJar(String resourcePath, Class<?> clazz) throws IOException {
+        if (init)
+            return false;
+        Checks.notNull(resourcePath, "Resource path");
+        Checks.notNull(clazz, "Class");
+
+        Path nativePath = IOUtil.copyNativeFromJar(resourcePath, clazz);
+        load(nativePath);
+        return true;
+    }
+}

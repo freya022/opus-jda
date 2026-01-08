@@ -1,0 +1,4 @@
+[libraries]
+jreleaser = "org.jreleaser:org.jreleaser.gradle.plugin:1.20.0"
+jspecify = "org.jspecify:jspecify:1.0.0"
+slf4j = "org.slf4j:slf4j-api:2.0.17"
