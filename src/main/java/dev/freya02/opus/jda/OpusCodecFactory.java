@@ -20,7 +20,7 @@ public class OpusCodecFactory implements IOpusCodecFactory {
             OpusNativesLoader.loadFromJar(absoluteNativeResource, OpusCodecFactory.class);
         }
 
-        LOG.debug("Using Opus {}", Opus.opus_get_version_string().getString(0));
+        LOG.debug("Using {}", Opus.opus_get_version_string().getString(0));
     }
 
     @Override
