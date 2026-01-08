@@ -12,6 +12,7 @@ jobs:
     name: Build opus
     runs-on: ${{ matrix.os }}
     env:
+      OPUS_REF: 'a8b13e40d751c7b40833b94fc9437c5c3439da89' #v1.6.0
       COMMON_CMAKE_FLAGS: "-DOPUS_BUILD_SHARED_LIBRARY=ON -DCMAKE_BUILD_TYPE=Release"
 
     outputs:
@@ -22,13 +23,21 @@ jobs:
         os: [ windows-latest, ubuntu-latest, macos-latest ]
 
     steps:
+      - name: Opus build cache
+        uses: actions/cache@v4
+        id: opus-build-cache
+        with:
+          path: output
+          key: ${{ runner.os }}-opus-build-cache-${{ env.OPUS_REF }}
+
       - name: Clone opus repo
         uses: actions/checkout@v6
         with:
           repository: xiph/opus
-          ref: 'a8b13e40d751c7b40833b94fc9437c5c3439da89' #v1.6.0
+          ref: '${{ env.OPUS_REF }}'
 
       - name: Build opus
+        if: ${{ steps.opus-build-cache.cache-hit != 'true' }}
         shell: bash
         run: |
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
