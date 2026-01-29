@@ -42,6 +42,3 @@ var audioModuleConfig = new AudioModuleConfig()
 
 jdaBuilder.setAudioModuleConfig(audioModuleConfig);
 ```
-
-> [!TIP]
-> To remove the warning when the natives are loaded, add `--enable-native-access=ALL-UNNAMED` to your JVM arguments.
